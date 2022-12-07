@@ -41,6 +41,10 @@ class MainActivity : AppCompatActivity() {
         //用reset按鈕來將offset與馬錶設為0
         val resetButton = findViewById<Button>(R.id.reset_button)
         resetButton.setOnClickListener {
+            if (running) {  //修正書本版的重置按鈕bug
+                stopwatch.stop()
+                running = false
+            }
             offset = 0
             setBaseTime()
         }
