@@ -12,12 +12,28 @@ class MainActivity : AppCompatActivity() {
     var running = false //馬錶是否正在執行？
     var offset: Long = 0 //馬錶暫停或重新啟動的offset
 
+    //加入Bundle的索引鍵String
+    val OFFSET_KEY = "offset"
+    val RUNNING_KEY = "running"
+    val BASE_KEY = "base"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         //取得馬錶的參考
         stopwatch = findViewById<Chronometer>(R.id.stopwatch)
+
+        //恢復之前的狀態
+        if (savedInstanceState != null) {
+            offset = savedInstanceState.getLong(OFFSET_KEY)
+            running = savedInstanceState.getBoolean(RUNNING_KEY)
+            if (running) {
+                stopwatch.base = savedInstanceState.getLong(BASE_KEY)
+                stopwatch.start()
+            } else setBaseTime()
+        }
+
         //用start按鈕啟動馬錶，如果它還沒有開始執行的話
         val startButton = findViewById<Button>(R.id.start_button)
         startButton.setOnClickListener {
@@ -48,6 +64,14 @@ class MainActivity : AppCompatActivity() {
             offset = 0
             setBaseTime()
         }
+    }
+
+    //用onSaveInstanceState方法來儲存offset、running與stopwatch.base屬性
+    override fun onSaveInstanceState(savedInstanceState: Bundle) {
+        savedInstanceState.putLong(OFFSET_KEY, offset)
+        savedInstanceState.putBoolean(RUNNING_KEY, running)
+        savedInstanceState.putLong(BASE_KEY, stopwatch.base)
+        super.onSaveInstanceState(savedInstanceState)
     }
 
     //更改stopwatch.base時間，允許任何offset
