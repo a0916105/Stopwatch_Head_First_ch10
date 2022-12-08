@@ -66,6 +66,25 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onStop() {
+        super.onStop()
+
+        if (running) {
+            saveOffset()
+            stopwatch.stop()
+        }
+    }
+
+    override fun onRestart() {
+        super.onRestart()
+
+        if (running) {
+            setBaseTime()
+            stopwatch.start()
+            offset = 0
+        }
+    }
+
     //用onSaveInstanceState方法來儲存offset、running與stopwatch.base屬性
     override fun onSaveInstanceState(savedInstanceState: Bundle) {
         savedInstanceState.putLong(OFFSET_KEY, offset)
