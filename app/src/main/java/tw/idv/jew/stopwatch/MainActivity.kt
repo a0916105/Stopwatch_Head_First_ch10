@@ -5,8 +5,10 @@ import android.os.Bundle
 import android.os.SystemClock
 import android.widget.Button
 import android.widget.Chronometer
+import tw.idv.jew.stopwatch.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityMainBinding
 
     lateinit var stopwatch: Chronometer //馬錶
     var running = false //馬錶是否正在執行？
@@ -19,7 +21,10 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
 
         //取得馬錶的參考
         stopwatch = findViewById<Chronometer>(R.id.stopwatch)
