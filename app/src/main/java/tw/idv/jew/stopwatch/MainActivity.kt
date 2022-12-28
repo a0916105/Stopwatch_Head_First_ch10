@@ -10,7 +10,7 @@ import tw.idv.jew.stopwatch.databinding.ActivityMainBinding
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 
-    lateinit var stopwatch: Chronometer //馬錶
+//    lateinit var stopwatch: Chronometer //馬錶 //使用binding直接呼叫
     var running = false //馬錶是否正在執行？
     var offset: Long = 0 //馬錶暫停或重新啟動的offset
 
@@ -26,44 +26,38 @@ class MainActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
 
-        //取得馬錶的參考
-        stopwatch = findViewById<Chronometer>(R.id.stopwatch)
-
         //恢復之前的狀態
         if (savedInstanceState != null) {
             offset = savedInstanceState.getLong(OFFSET_KEY)
             running = savedInstanceState.getBoolean(RUNNING_KEY)
             if (running) {
-                stopwatch.base = savedInstanceState.getLong(BASE_KEY)
-                stopwatch.start()
+                binding.stopwatch.base = savedInstanceState.getLong(BASE_KEY)
+                binding.stopwatch.start()
             } else setBaseTime()
         }
 
         //用start按鈕啟動馬錶，如果它還沒有開始執行的話
-        val startButton = findViewById<Button>(R.id.start_button)
-        startButton.setOnClickListener {
+        binding.startButton.setOnClickListener {
             if (!running) {
                 setBaseTime()
-                stopwatch.start()
+                binding.stopwatch.start()
                 running = true
             }
         }
 
         //pause按鈕會在馬錶正在執行時暫停
-        val pauseButton = findViewById<Button>(R.id.pause_button)
-        pauseButton.setOnClickListener {
+        binding.pauseButton.setOnClickListener {
             if (running) {
                 saveOffset()
-                stopwatch.stop()
+                binding.stopwatch.stop()
                 running = false
             }
         }
 
         //用reset按鈕來將offset與馬錶設為0
-        val resetButton = findViewById<Button>(R.id.reset_button)
-        resetButton.setOnClickListener {
+        binding.resetButton.setOnClickListener {
             if (running) {  //修正書本版的重置按鈕bug
-                stopwatch.stop()
+                binding.stopwatch.stop()
                 running = false
             }
             offset = 0
@@ -76,7 +70,7 @@ class MainActivity : AppCompatActivity() {
 
         if (running) {
             saveOffset()
-            stopwatch.stop()
+            binding.stopwatch.stop()
         }
     }
 
@@ -85,7 +79,7 @@ class MainActivity : AppCompatActivity() {
 
         if (running) {
             setBaseTime()
-            stopwatch.start()
+            binding.stopwatch.start()
             offset = 0
         }
     }
@@ -94,17 +88,17 @@ class MainActivity : AppCompatActivity() {
     override fun onSaveInstanceState(savedInstanceState: Bundle) {
         savedInstanceState.putLong(OFFSET_KEY, offset)
         savedInstanceState.putBoolean(RUNNING_KEY, running)
-        savedInstanceState.putLong(BASE_KEY, stopwatch.base)
+        savedInstanceState.putLong(BASE_KEY, binding.stopwatch.base)
         super.onSaveInstanceState(savedInstanceState)
     }
 
     //更改stopwatch.base時間，允許任何offset
     fun setBaseTime() {
-        stopwatch.base = SystemClock.elapsedRealtime() - offset
+        binding.stopwatch.base = SystemClock.elapsedRealtime() - offset
     }
 
     //紀錄offset
     fun saveOffset() {
-        offset = SystemClock.elapsedRealtime() - stopwatch.base
+        offset = SystemClock.elapsedRealtime() - binding.stopwatch.base
     }
 }
